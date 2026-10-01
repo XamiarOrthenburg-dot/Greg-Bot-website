@@ -1,0 +1,1196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Greg Bot</title>
+
+<style>
+
+/* =========================
+   GLOBAL
+========================= */
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background:
+        radial-gradient(circle at top right, #12366b 0%, transparent 35%),
+        radial-gradient(circle at bottom left, #0c2852 0%, transparent 35%),
+        #06142d;
+
+    color: white;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+
+/* =========================
+   DASHBOARD
+========================= */
+
+.dashboard {
+    min-height: 100vh;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(18, 55, 105, 0.95),
+            rgba(10, 35, 74, 0.97)
+        );
+}
+
+
+/* =========================
+   TOP BAR
+========================= */
+
+.topbar {
+    height: 76px;
+
+    display: flex;
+    align-items: center;
+
+    padding: 0 28px;
+
+    background: rgba(5, 20, 45, 0.85);
+
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+
+    backdrop-filter: blur(15px);
+
+    position: sticky;
+    top: 0;
+
+    z-index: 500;
+}
+
+.logo {
+    margin-left: 18px;
+
+    font-size: 23px;
+
+    font-weight: 800;
+
+    letter-spacing: 0.3px;
+}
+
+
+/* =========================
+   HAMBURGER MENU
+========================= */
+
+.menu-btn {
+    width: 48px;
+    height: 48px;
+
+    display: flex;
+    flex-direction: column;
+
+    justify-content: center;
+    align-items: center;
+
+    gap: 5px;
+
+    background: rgba(30, 77, 130, 0.8);
+
+    border: 1px solid rgba(255,255,255,0.08);
+
+    border-radius: 12px;
+
+    cursor: pointer;
+
+    transition: 0.25s;
+}
+
+.menu-btn span {
+    display: block;
+
+    width: 23px;
+    height: 3px;
+
+    background: white;
+
+    border-radius: 10px;
+
+    transition: 0.25s;
+}
+
+.menu-btn:hover {
+    background: #21588f;
+
+    transform: translateY(-2px);
+}
+
+.menu-btn:hover span:nth-child(1) {
+    transform: translateX(-2px);
+}
+
+.menu-btn:hover span:nth-child(3) {
+    transform: translateX(2px);
+}
+
+
+/* =========================
+   SIDE MENU
+========================= */
+
+.side-menu {
+    position: fixed;
+
+    top: 0;
+    left: -330px;
+
+    width: 330px;
+    height: 100vh;
+
+    background:
+        linear-gradient(
+            180deg,
+            #081d3e,
+            #06162f
+        );
+
+    z-index: 1000;
+
+    padding: 30px 22px;
+
+    transition:
+        left 0.35s cubic-bezier(.4,0,.2,1);
+
+    box-shadow:
+        15px 0 50px rgba(0,0,0,0.5);
+
+    border-right: 1px solid rgba(255,255,255,0.07);
+}
+
+.side-menu.open {
+    left: 0;
+}
+
+.side-menu h2 {
+    font-size: 25px;
+
+    margin: 8px 0 35px 5px;
+
+    letter-spacing: 0.5px;
+}
+
+
+/* CLOSE */
+
+.close-btn {
+    position: absolute;
+
+    right: 20px;
+    top: 16px;
+
+    width: 40px;
+    height: 40px;
+
+    border: none;
+
+    background: rgba(255,255,255,0.06);
+
+    color: white;
+
+    border-radius: 10px;
+
+    font-size: 25px;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+}
+
+.close-btn:hover {
+    background: rgba(255,255,255,0.12);
+
+    transform: rotate(90deg);
+}
+
+
+/* =========================
+   MENU ITEMS
+========================= */
+
+.menu-item {
+    width: 100%;
+
+    padding: 16px 18px;
+
+    margin-bottom: 12px;
+
+    border: 1px solid rgba(255,255,255,0.05);
+
+    border-radius: 12px;
+
+    background: rgba(18,55,98,0.7);
+
+    color: white;
+
+    text-align: left;
+
+    cursor: pointer;
+
+    font-size: 15px;
+
+    font-weight: 600;
+
+    transition: 0.25s;
+}
+
+.menu-item:hover {
+    background: #1d5085;
+
+    transform: translateX(5px);
+
+    border-color: rgba(255,255,255,0.1);
+}
+
+
+/* =========================
+   OVERLAY
+========================= */
+
+.overlay {
+    position: fixed;
+
+    inset: 0;
+
+    background: rgba(0,0,0,0.65);
+
+    backdrop-filter: blur(3px);
+
+    display: none;
+
+    z-index: 900;
+}
+
+.overlay.show {
+    display: block;
+}
+
+
+/* =========================
+   HOME
+========================= */
+
+.welcome {
+    max-width: 1150px;
+
+    margin: auto;
+
+    padding: 75px 28px;
+}
+
+.welcome h1 {
+    font-size: clamp(35px, 6vw, 52px);
+
+    line-height: 1.1;
+
+    margin-bottom: 18px;
+
+    letter-spacing: -1px;
+}
+
+.welcome-description {
+    color: #c5d7ef;
+
+    max-width: 780px;
+
+    font-size: 18px;
+
+    line-height: 1.7;
+}
+
+
+/* =========================
+   FEATURE CARDS
+========================= */
+
+.cards {
+    display: grid;
+
+    grid-template-columns:
+        repeat(auto-fit, minmax(240px, 1fr));
+
+    gap: 22px;
+
+    margin-top: 48px;
+}
+
+.card {
+    position: relative;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(15,48,94,0.95),
+            rgba(8,31,65,0.95)
+        );
+
+    border-radius: 18px;
+
+    padding: 28px;
+
+    min-height: 175px;
+
+    border: 1px solid rgba(255,255,255,0.07);
+
+    box-shadow:
+        0 15px 35px rgba(0,0,0,0.18);
+
+    transition:
+        transform 0.25s,
+        border-color 0.25s,
+        box-shadow 0.25s;
+}
+
+.card:hover {
+    transform: translateY(-7px);
+
+    border-color: rgba(103,178,255,0.35);
+
+    box-shadow:
+        0 20px 45px rgba(0,0,0,0.28);
+}
+
+.card h2 {
+    margin-bottom: 13px;
+
+    font-size: 21px;
+}
+
+.card p {
+    color: #b9cde8;
+
+    line-height: 1.6;
+
+    font-size: 15px;
+}
+
+
+/* =========================
+   CONTENT
+========================= */
+
+.content-section {
+    display: none;
+
+    max-width: 1100px;
+
+    margin: auto;
+
+    padding: 65px 28px 90px;
+}
+
+.content-section h1 {
+    font-size: clamp(32px, 5vw, 43px);
+
+    margin-bottom: 14px;
+
+    letter-spacing: -0.5px;
+}
+
+.content-section > p {
+    color: #bdcee6;
+
+    line-height: 1.7;
+
+    max-width: 750px;
+
+    margin-bottom: 35px;
+}
+
+
+/* =========================
+   COMMAND CATEGORIES
+========================= */
+
+.command-category {
+    margin-top: 42px;
+
+    margin-bottom: 16px;
+
+    font-size: 22px;
+
+    padding-bottom: 12px;
+
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+
+/* =========================
+   COMMAND CARDS
+========================= */
+
+.command {
+    background:
+        linear-gradient(
+            145deg,
+            rgba(10,35,74,0.95),
+            rgba(8,29,61,0.95)
+        );
+
+    padding: 20px 22px;
+
+    border-radius: 13px;
+
+    margin-top: 12px;
+
+    border: 1px solid rgba(255,255,255,0.06);
+
+    transition:
+        transform 0.2s,
+        background 0.2s,
+        border-color 0.2s;
+}
+
+.command:hover {
+    transform: translateX(5px);
+
+    background:
+        linear-gradient(
+            145deg,
+            #103d70,
+            #0a2b57
+        );
+
+    border-color:
+        rgba(103,178,255,0.25);
+}
+
+.command code {
+    color: #67b2ff;
+
+    font-size: 16px;
+
+    font-weight: 700;
+
+    font-family: Consolas, monospace;
+}
+
+.command p {
+    color: #bdcde4;
+
+    margin-top: 8px;
+
+    line-height: 1.55;
+
+    font-size: 14px;
+}
+
+
+/* =========================
+   ADD BOT
+========================= */
+
+.add-bot-container {
+    background:
+        linear-gradient(
+            145deg,
+            rgba(15,48,94,0.95),
+            rgba(8,31,65,0.95)
+        );
+
+    border: 1px solid rgba(255,255,255,0.08);
+
+    border-radius: 20px;
+
+    padding: 35px;
+
+    max-width: 700px;
+
+    box-shadow:
+        0 20px 45px rgba(0,0,0,0.2);
+}
+
+.add-bot-container p {
+    color: #bdcee5;
+
+    line-height: 1.7;
+
+    margin-bottom: 25px;
+}
+
+.add-bot {
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding: 15px 24px;
+
+    border-radius: 11px;
+
+    background: #5865f2;
+
+    color: white;
+
+    text-decoration: none;
+
+    font-weight: bold;
+
+    transition: 0.25s;
+
+    box-shadow:
+        0 8px 20px rgba(88,101,242,0.25);
+}
+
+.add-bot:hover {
+    background: #4752c4;
+
+    transform: translateY(-3px);
+
+    box-shadow:
+        0 12px 25px rgba(88,101,242,0.35);
+}
+
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 600px) {
+
+    .topbar {
+        padding: 0 18px;
+    }
+
+    .welcome {
+        padding: 55px 20px;
+    }
+
+    .content-section {
+        padding: 50px 20px 70px;
+    }
+
+    .side-menu {
+        width: 290px;
+    }
+
+    .cards {
+        grid-template-columns: 1fr;
+    }
+
+    .add-bot-container {
+        padding: 25px;
+    }
+
+}
+
+</style>
+</head>
+
+<body>
+
+
+<!-- =========================
+     SIDE MENU
+========================= -->
+
+<div class="side-menu" id="sideMenu">
+
+    <button
+        class="close-btn"
+        onclick="closeMenu()"
+        aria-label="Close menu"
+    >
+        ×
+    </button>
+
+    <h2>
+        Greg Bot
+    </h2>
+
+    <button
+        class="menu-item"
+        onclick="showHome()"
+    >
+        🏠 Home
+    </button>
+
+    <button
+        class="menu-item"
+        onclick="showCommands()"
+    >
+        📋 All Commands
+    </button>
+
+    <button
+        class="menu-item"
+        onclick="showAddBot()"
+    >
+        ➕ Add Bot to Your Server
+    </button>
+
+</div>
+
+
+<div
+    class="overlay"
+    id="overlay"
+    onclick="closeMenu()"
+></div>
+
+
+<!-- =========================
+     DASHBOARD
+========================= -->
+
+<div class="dashboard">
+
+
+    <!-- TOP BAR -->
+
+    <div class="topbar">
+
+        <button
+            class="menu-btn"
+            onclick="openMenu()"
+            aria-label="Open menu"
+        >
+
+            <span></span>
+            <span></span>
+            <span></span>
+
+        </button>
+
+        <div class="logo">
+            Greg Bot
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         HOME
+    ========================= -->
+
+    <main
+        class="welcome"
+        id="welcome"
+    >
+
+        <h1>
+            Welcome to Greg Bot!
+        </h1>
+
+        <p class="welcome-description">
+
+            Greg Bot is a powerful Discord
+            moderation, security, anti-raid,
+            anti-spam, and server protection bot
+            built to help keep your community
+            secure and manageable.
+
+        </p>
+
+
+        <div class="cards">
+
+
+            <div class="card">
+
+                <h2>
+                    🛡️ Anti-Raid
+                </h2>
+
+                <p>
+                    Detect and respond to suspicious
+                    joining activity and potential
+                    raid behavior.
+                </p>
+
+            </div>
+
+
+            <div class="card">
+
+                <h2>
+                    🚫 Anti-Spam
+                </h2>
+
+                <p>
+                    Help detect excessive messaging
+                    and unwanted spam activity.
+                </p>
+
+            </div>
+
+
+            <div class="card">
+
+                <h2>
+                    🔒 Server Security
+                </h2>
+
+                <p>
+                    Tools for lockdowns, channel
+                    controls, verification, and
+                    server security checks.
+                </p>
+
+            </div>
+
+
+            <div class="card">
+
+                <h2>
+                    🧠 Threat Intelligence
+                </h2>
+
+                <p>
+                    Examine server threats,
+                    security risks, and other
+                    important monitoring information.
+                </p>
+
+            </div>
+
+
+        </div>
+
+    </main>
+
+
+    <!-- =========================
+         ALL COMMANDS
+    ========================= -->
+
+    <section
+        class="content-section"
+        id="commands"
+    >
+
+        <h1>
+            All Commands
+        </h1>
+
+        <p>
+            Explore everything Greg Bot has
+            available for your Discord server.
+        </p>
+
+
+        <!-- SECURITY -->
+
+        <h2 class="command-category">
+            🛡️ Security & Anti-Raid
+        </h2>
+
+
+        <div class="command">
+            <code>/deep-scan</code>
+            <p>
+                Searches through a user's profile
+                to detect potential risks such as
+                raider or nuker activity.
+            </p>
+        </div>
+
+
+        <div class="command">
+            <code>/prune-raid</code>
+            <p>
+                Selects how many minutes back to
+                check for users who joined and
+                kicks users within that timeframe.
+            </p>
+        </div>
+
+
+        <div class="command">
+            <code>/security-check</code>
+            <p>
+                Checks server security risks and
+                recommends possible security changes.
+            </p>
+        </div>
+
+
+        <div class="command">
+            <code>/setup-verification</code>
+            <p>
+                Sets up server verification.
+            </p>
+        </div>
+
+
+        <div class="command">
+            <code>/threat-intel</code>
+            <p>
+                Displays server threat intelligence
+                and other information for security
+                examination.
+            </p>
+        </div>
+
+
+        <div class="command">
+            <code>/threat-level</code>
+            <p>
+                Allows administrators to alter the
+                server's security level.
+            </p>
+        </div>
+
+
+        <!-- SERVER CONTROL -->
+
+        <h2 class="command-category">
+            🔒 Server Control
+        </h2>
+
+
+        <div class="command">
+            <code>/channel lock</code>
+            <p>
+                Locks the selected channel.
+            </p>
+        </div>
+
+
+        <div class="command">
+            <code>/freeze</code>
+            <p>
+                Freezes all channels.
+            </p>
+        </div>
+
+
+        <div class="command">
+            <code>/lockdown</code>
+            <p>
+                Pauses server invites.
+            </p>
+        </div>
+
+
+        <div class="command">
+            <code>/unlockdown</code>
+            <p>
+                Resumes server invites.
+            </p>
+        </div>
+
+
+        <div class="command">
+            <code>/slowmode-all</code>
+            <p>
+                Activates slowmode across the
+                server using a time selected by
+                an administrator.
+            </p>
+        </div>
+
+
+        <!-- MODERATION -->
+
+        <h2 class="command-category">
+            🔨 Moderation
+        </h2>
+
+
+        <div class="command">
+            <code>/discipline-list</code>
+            <p>
+                Displays current timeouts and bans.
+            </p>
+        </div>
+
+
+        <div class="command">
+            <code>/infractions</code>
+            <p>
+                Examines the selected user's
+                current infractions.
+            </p>
+        </div>
+
+
+        <div class="command">
+            <code>/untimeout</code>
+            <p>
+                Immediately lifts the isolation
+                timeout from a user.
+            </p>
+        </div>
+
+
+        <div class="command">
+            <code>/warn</code>
+            <p>
+                Warns the selected user.
+            </p>
+        </div>
+
+
+        <!-- AUTOMATED SYSTEMS -->
+
+        <h2 class="command-category">
+            ⚙️ Automated Systems
+        </h2>
+
+
+        <div class="command">
+            <code>/automated-systems</code>
+            <p>
+                Displays a complete list of the
+                currently active automated systems.
+            </p>
+        </div>
+
+
+        <div class="command">
+            <code>/filter-curses</code>
+            <p>
+                Turns the profanity filter on or
+                off and allows administrators to
+                adjust its intensity.
+            </p>
+        </div>
+
+
+        <!-- MONITORING -->
+
+        <h2 class="command-category">
+            📊 Monitoring & Information
+        </h2>
+
+
+        <div class="command">
+            <code>/system-hud</code>
+            <p>
+                Displays a system monitoring
+                terminal.
+            </p>
+        </div>
+
+
+        <div class="command">
+            <code>/prefix-commands</code>
+            <p>
+                Displays all available "!"
+                prefix commands.
+            </p>
+        </div>
+
+
+        <!-- UTILITY -->
+
+        <h2 class="command-category">
+            📢 Utility
+        </h2>
+
+
+        <div class="command">
+            <code>/announce</code>
+            <p>
+                Creates an embedded announcement
+                with a selectable color, title
+                heading, and description.
+            </p>
+        </div>
+
+
+    </section>
+
+
+    <!-- =========================
+         ADD BOT
+    ========================= -->
+
+    <section
+        class="content-section"
+        id="addBot"
+    >
+
+        <h1>
+            Add Greg Bot to Your Server
+        </h1>
+
+
+        <div class="add-bot-container">
+
+            <p>
+                Connect Greg Bot to your Discord
+                server and start using its
+                moderation, security, monitoring,
+                and protection features.
+            </p>
+
+
+            <a
+                class="add-bot"
+                href="https://tinyurl.com/sjmtw9n4"
+                target="_blank"
+                rel="noopener noreferrer"
+            >
+                Add Greg Bot to Your Server
+            </a>
+
+        </div>
+
+    </section>
+
+
+</div>
+
+
+<!-- =========================
+     JAVASCRIPT
+========================= -->
+
+<script>
+
+
+/* OPEN MENU */
+
+function openMenu() {
+
+    document
+        .getElementById("sideMenu")
+        .classList
+        .add("open");
+
+    document
+        .getElementById("overlay")
+        .classList
+        .add("show");
+
+}
+
+
+/* CLOSE MENU */
+
+function closeMenu() {
+
+    document
+        .getElementById("sideMenu")
+        .classList
+        .remove("open");
+
+    document
+        .getElementById("overlay")
+        .classList
+        .remove("show");
+
+}
+
+
+/* HIDE ALL SECTIONS */
+
+function hideSections() {
+
+    document
+        .getElementById("welcome")
+        .style
+        .display = "none";
+
+    document
+        .getElementById("commands")
+        .style
+        .display = "none";
+
+    document
+        .getElementById("addBot")
+        .style
+        .display = "none";
+
+}
+
+
+/* HOME */
+
+function showHome() {
+
+    closeMenu();
+
+    hideSections();
+
+    document
+        .getElementById("welcome")
+        .style
+        .display = "block";
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+
+}
+
+
+/* COMMANDS */
+
+function showCommands() {
+
+    closeMenu();
+
+    hideSections();
+
+    document
+        .getElementById("commands")
+        .style
+        .display = "block";
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+
+}
+
+
+/* ADD BOT */
+
+function showAddBot() {
+
+    closeMenu();
+
+    hideSections();
+
+    document
+        .getElementById("addBot")
+        .style
+        .display = "block";
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+
+}
+
+
+/* ESCAPE KEY CLOSES MENU */
+
+document.addEventListener(
+    "keydown",
+    function(event) {
+
+        if (event.key === "Escape") {
+            closeMenu();
+        }
+
+    }
+);
+
+</script>
+
+</body>
+</html>
